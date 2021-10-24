@@ -1,0 +1,16 @@
+/* pages/ToR_and_R/ToR_and_R.wxss */
+.R_and_R_title{
+    font-size: calc(750rpx*48/360);
+    text-align: center;
+}
+.R_and_R_futitle{
+    font-size: calc(750rpx*18/360);
+    color: rgb(142,142,147);
+    text-align: center;
+    margin-top: 208rpx;
+}
+image{
+    width: 750rpx;
+    height: calc(750rpx*270/360);
+    margin-top: 102rpx;
+}

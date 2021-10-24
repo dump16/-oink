@@ -1,0 +1,5 @@
+<!--pages/ToR_and_R/ToR_and_R.wxml-->
+
+<view class="R_and_R_title">在线对战</view>
+<view class="R_and_R_futitle">两名玩家在不同客户端进行对战</view>
+<image src="https://i.loli.net/2021/10/13/FZstUbpXkjxm4Li.png" />

@@ -1,0 +1,13 @@
+<!--pages/select/select.wxml-->
+<view class="select_title">选择模式</view>
+<view class="select_futitle">选择要进行的游戏模式</view>
+<image  src="https://i.loli.net/2021/10/10/k8KEqMNT9txVhpL.jpg"/>
+<button class="p_and_p" bindtap='To_PandP'>
+    人人对战
+</button>
+<button class="p_and_r" bindtap='To_PandR'>
+    人机对战
+</button>
+<button class="r_and_r" bindtap='To_RandR'>
+    在线对战
+</button>

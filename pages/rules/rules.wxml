@@ -1,0 +1,27 @@
+<!--pages/rules/rules.wxml-->
+ <scroll-view scroll-y="true" style="height: 1300rpx;"   scroll-into-view="{{toView}}" scroll-top="{{scrollTop}}">
+          <view class="ruleTitle">游戏规则</view>
+          <text>1.由一名玩家开始，从【卡组】随机抽取翻开一张扑克牌，置于【放置区】上。</text>
+        <image src="https://i.loli.net/2021/10/22/fxXMOTyWsp86aHb.png"  />
+        <image src="https://i.loli.net/2021/10/22/4vLIUlCnyjhNQu3.png" />
+        <text>2.切换到另外一名玩家操作，执行1操作，此时插入判定:
+      若翻开的花色与【放置区】原顶部扑克牌花色相同，需进行以下操作:
+            将放置区的所有牌收到自己【手牌】内（即”吃“牌）。</text>
+        <image src="https://i.loli.net/2021/10/22/kDyKuzafqSI7bLO.png"  />
+        <image src="https://i.loli.net/2021/10/22/tuQFaf1YE9eOrRG.png" />
+        <image src="https://i.loli.net/2021/10/22/6B5MKLTqka1i2Q4.png" />
+        <text>3.在执行1操作前，若玩家【手牌】非空，则:
+     玩家可选择放弃翻牌，同时需要从【手牌】中选择一张牌置于【放置区】顶部作为替代，判定同2操作。</text>
+        <image src="https://i.loli.net/2021/10/22/gT4e2pIDAoa6n7H.png"  />
+        <image src="https://i.loli.net/2021/10/22/zSuAOhWpiYtdrTI.png" />
+        <text>4.若【卡组】非空，则重复2操作；</text>
+        <image src="https://i.loli.net/2021/10/22/KsWMJgoXIl5mSU4.png"  />
+        <text >5.当【卡组】为空，且插入判定结算完成，游戏终止，进行结算判定:
+      比较两玩家【手牌】卡牌数量:
+            剩余卡片数量小者获胜;
+            数量相同则判断为平局。</text>
+        <image src="https://i.loli.net/2021/10/22/fxXMOTyWsp86aHb.png"  />
+</scroll-view>
+<button bindtap='goback'>
+    返回
+</button>

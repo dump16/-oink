@@ -1,0 +1,60 @@
+/* pages/create/create.wxss */
+/*.icon-fanhui{
+    color: rgb(254,137,179);
+    position: absolute;
+    left: 25rpx;
+    top: 27rpx;
+}*/
+.row{
+    display: flex;
+    height: calc(750rpx*80/360);
+    width: calc(750rpx*321/360);
+    margin: 80rpx 42rpx 80rpx 42rpx; 
+    border-bottom: 1px solid #eee;
+}
+.pic{
+    flex:2;
+}
+.text{
+    flex:8;
+    padding-left: 15rpx;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
+    padding-bottom: 25rpx;
+}
+.text .user{
+    font-size: 33prx;
+}
+.text .time{
+    font-size: 29rpx;
+    color: rgb(142,142,147);
+}
+image{
+    width: calc(750rpx*53/360);
+    height: calc(750rpx*53/360);
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow:3rpx 3rpx 3rpx 3rpx dimgrey;
+}
+button{
+    color: white;
+    background-color: rgb(254,137,179);		
+}
+.join_in{
+    padding-top: 20rpx;
+    padding-right: 30rpx;
+}
+.join_in .join_button{
+    width:calc(750rpx*80/360);
+    height:calc(750rpx*24/360);
+    font-size: 18rpx;
+    margin-top: 20rpx;
+}
+.total{
+    width: calc(750rpx*288/360);
+    height: calc(750rpx*43/360);
+    position: absolute;
+    top: 1348rpx;
+    left: 180rpx;
+}
