@@ -99,7 +99,7 @@ Page({
     'Authorization':token},
     method: 'POST',
     success: (res) => {
-      console.log(res.data);
+      console.log(res.data)
       wx.setStorageSync("uuid",res.data.data.uuid);
       wx.showToast({
         title: '等待对局 游戏匹配中 等待对局创建……',
@@ -119,7 +119,7 @@ Page({
  },
  join_new: function(event) {
   const token=wx.getStorageSync("token");
-  let uuid=event.currentTarget.dataset.uuid;
+  wx.setStorageSync("uuid",event.currentTarget.dataset.uuid);
   wx.request({
     url: 'http://172.17.173.97:9000/api/game/?uuid',
     data: {private:false},
@@ -128,6 +128,7 @@ Page({
     method: 'POST',
     success: (res) => {
       console.log(res.data)
+      const uuid=wx.getStorageSync("uuid");
       if(res.data.code==200)this.getLast(uuid);
     },
     fail: () => {},

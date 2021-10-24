@@ -5,14 +5,49 @@ Page({
    * 页面的初始数据
    */
   data: {
-
+    winner:'',
+    loser:''
   },
-
+onLoad: function(option){
+    if(option.id==0){
+      this.setData({
+        winner:"P1",
+        loser:"P2"
+      })
+    }
+    else{
+      this.setData({
+        winner:"P2",
+        loser:"P1"
+      })
+    }
+},
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (options) {
-
+  onShow: function () {
+      setTimeout((res) => {
+        wx.showModal({
+          title: '提示',
+          content: '您要退出登录吗',
+          success: function (res) {
+            if (res.confirm) {//这里是点击了确定以后
+              console.log('用户点击确定')
+              wx.setStorageSync('token', '');//将token置空
+              wx.setStorageSync('name', '');
+              wx.setStorageSync('student_id', '');
+              wx.redirectTo({
+                url: '/pages/logout/logout',
+              })
+            } else {//这里是点击了取消以后
+              console.log('用户点击取消')
+              wx.redirectTo({
+                url: '/pages/create/create',
+              })
+            }
+          }
+        })
+      }, 5000);
   },
 
   /**
@@ -22,12 +57,7 @@ Page({
 
   },
 
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
 
-  },
 
   /**
    * 生命周期函数--监听页面隐藏

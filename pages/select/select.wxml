@@ -1,4 +1,5 @@
 <!--pages/select/select.wxml-->
+<image src="https://i.loli.net/2021/10/24/Uy9iAC5zN3dWBG1.png" class="lookrule" bindtap="lookrule"/>
 <view class="select_title">选择模式</view>
 <view class="select_futitle">选择要进行的游戏模式</view>
 <image  src="https://i.loli.net/2021/10/10/k8KEqMNT9txVhpL.jpg"/>

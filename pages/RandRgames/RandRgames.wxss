@@ -374,3 +374,9 @@ page{
     width: calc(750rpx*12/360);
     height: calc(750rpx*15/360);
 }
+.icon-fanhui{
+    position: absolute;
+    left: 25rpx;
+    top: 27rpx;
+    color: white;
+}

@@ -2,6 +2,7 @@
 <view >
     <image  src="https://i.loli.net/2021/10/21/XBh8MONaSduTtHk.jpg" class="background"></image>
 </view> 
+<view class="iconfont icon-fanhui" bindtap='toLast'></view>
 <view class="row">
     <block wx:if="{{isshow}}">
         <view class="player1" >
@@ -56,7 +57,7 @@
     </view>
     <view class="putnum" style="width: 271rpx; height: 365rpx; display: block; box-sizing: border-box">
         <image src="{{image_url}}"/>
-        <text >现有{{placement_num}}张</text>
+        <text >现有{{placement_num}}张{{top}}</text>
     </view>
 </view>
 <view class="row2">
@@ -130,6 +131,5 @@
             <image src="https://i.loli.net/2021/10/22/u2q7tdjJky15aNL.png" />
             <text >机器人哆啦-2号机</text>
         </view>
-    </block>
-    
+    </block>  
 </view>

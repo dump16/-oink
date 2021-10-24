@@ -7,6 +7,7 @@ Page({
   data: {
     isshow:true,
     lookcard:false,
+    image_url0:'https://i.loli.net/2021/10/23/d5toN2OHnrhIZyP.jpg',
     image_url:'https://i.loli.net/2021/10/24/rwhbsH4WqPcOY5U.png',
     last_code:" ",                  //   上步操作信息
     type:0,                         //   操作，0为卡组抽牌，1为手牌出牌
@@ -20,6 +21,8 @@ Page({
     your_turn:false,                //   是否是己方回合
     finished:false,                 //   完成情况
     winner:0,                       //   胜利者：0为1P，1为2P*/
+    host_hand:[],
+    client_hand:[],
     player:[{hand:[],num:[],total:0},
             {hand:[],num:[],total:0}]
   },
@@ -210,7 +213,7 @@ Page({
     }
     else if(e=="S9"){
       this.setData({
-        image_url:'https://i.loli.net/2021/10/24/kXrEF2SwdaCZD3V.pngg'
+        image_url:'https://i.loli.net/2021/10/24/kDGg4o1qVxspObP.png'
       })
     }
     else if(e=="H9"){
@@ -348,9 +351,25 @@ Page({
       console.log("P->G");
     }
   },
-  SelectGroup: function(e){                //  卡组抽牌
+  SelectGroup: function(e){                // 玩家-卡组抽牌
     var that = this;
     that.data.type=0;
+    //  执行操作
+    const token=wx.getStorageSync("token");
+    let uuid=wx.getStorageSync("uuid");
+    wx.request({
+      url: 'http://172.17.173.97:9000/api/game/?uuid',
+      data: {"type":0},
+      header: {'content-type':'application/json',
+      'Authorization':token},
+      method: 'PUT',
+      success: (res) => {
+        console.log(res.data);
+        that.data.card=res.data.data.last_code.substring(4);
+      },
+      fail: () => {},
+      complete: () => {}
+    });
     that.data.placement_card[that.data.placement_num++] = that.data.card;
     if(this.IsEat() == true){
       this.EatHand();
@@ -361,7 +380,19 @@ Page({
       this.IsWinner();
     }
   },
-  OpHand: function(e){                     //  处理手牌
+  SelectGroup1: function(e){               // 对方-卡组抽牌
+    var that = this;
+    that.data.placement_card[that.data.placement_num++] = that.data.card;
+    if(this.IsEat() == true){
+      this.EatHand();
+    }
+    this.Update();
+    if(that.data.group_num == -1){         //  卡组为空，结束对局
+      that.data.finished = true;
+      this.IsWinner();
+    }
+  },
+  OpHand: function(e){                     // 处理手牌
     var that = this;
     var suit = that.data.temp.substring(0, 1);
     var i = 0;
@@ -388,52 +419,103 @@ Page({
         break;
     }
   },  
-  SelectHand: function(e){                  //  手牌出牌
+  SelectHand: function(e){                 // 玩家-手牌出牌
     var that = this;
     that.data.type=1;
-    var suit = that.data.card.substring(0, 1);
-    var i = 0;
-    if(that.data.your_turn = true){
-      i=1;
-    }
+    var suit = that.data.temp.substring(0, 1);
     if(that.data.player[i].total != 0){
       switch(suit) {                      //  对应花色
         case "S": //黑桃S
-          if(that.data.player[i].num[0] == 0){
+          if(that.data.player[1].num[0] == 0){
             break;
           }
-          that.data.player[i].total--;
-          that.data.placement_card[that.data.placement_num++] = that.data.player[i].hand[0][--that.data.player[i].num[0]];
+          that.data.player[1].total--;
+          that.data.placement_card[that.data.placement_num++] = that.data.player[1].hand[0][--that.data.player[1].num[0]];
           break;
         case "H": //红桃H
           if(that.data.player[i].num[1] == 0){
             break;
           }
-          that.data.player[i].total--;
-          that.data.placement_card[that.data.placement_num++] = that.data.player[i].hand[1][--that.data.player[i].num[1]];
+          that.data.player[1].total--;
+          that.data.placement_card[that.data.placement_num++] = that.data.player[1].hand[1][--that.data.player[1].num[1]];
           break;
         case "C": //梅花C
-          if(that.data.player[i].num[2] == 0){
+          if(that.data.player[1].num[2] == 0){
             break;
           }
-          that.data.player[i].total--;
-          that.data.placement_card[that.data.placement_num++] = that.data.player[i].hand[2][--that.data.player[i].num[2]];
+          that.data.player[1].total--;
+          that.data.placement_card[that.data.placement_num++] = that.data.player[1].hand[2][--that.data.player[1].num[2]];
           break;
         case "D": //方块D
-          if(that.data.player[i].num[3] == 0){
+          if(that.data.player[1].num[3] == 0){
             break;
           }
-          that.data.player[i].total--;
-          that.data.placement_card[that.data.placement_num++] = that.data.player[i].hand[3][--that.data.player[i].num[3]];
+          that.data.player[1].total--;
+          that.data.placement_card[that.data.placement_num++] = that.data.player[1].hand[3][--that.data.player[1].num[3]];
           break;
       }
+      that.data.card=that.data.placement_card[that.data.placement_num-1];
+      //  执行玩家操作-手牌出牌
+      const token=wx.getStorageSync("token");
+      let uuid=wx.getStorageSync("uuid");
+      wx.request({
+        url: 'http://172.17.173.97:9000/api/game/?uuid',
+        data: {"type":1,"card":that.data.card},
+        header: {'content-type':'application/json',
+        'Authorization':token},
+        method: 'PUT',
+        success: (res) => {
+          console.log(res.data);
+        },
+        fail: () => {},
+        complete: () => {}
+      });
       if(this.IsEat() == true){
         this.EatHand();
       }
+      this.Update();
+    } 
+  }, 
+  SelectHand1: function(e){                // 对方-手牌出牌
+    var that = this;
+    var suit = that.data.card.substring(0, 1);
+    that.data.player[0].total--;
+    that.data.placement_card[that.data.placement_num++] = that.data.card;
+    var suit_int=-1;
+    switch(suit) {                         // 对应花色
+      case "S":                            // 黑桃S
+        suit_int=0;
+        break;
+      case "H": //红桃H
+        suit_int=1;
+        break;
+      case "C": //梅花C
+        suit_int=2;
+        break;
+      case "D": //方块D
+        suit_int=3;
+        break;
+    }
+    //  移除该手牌
+    var flag = -1;
+    for(var i = 0; i < that.data.player[0].num[suit_int]; i++){
+      if(flag!=-1){
+        if(i==that.data.player[0].num[suit_int]-1){
+          break;
+        }else{  //卡牌前移
+          that.data.player[0].hand[suit_int][i]=that.data.player[0].hand[suit_int][i+1];
+        }
+      }else if(that.data.player[0].hand[suit_int][i] == card){
+        flag = i;
+      }
+    }
+    that.data.player[0].num[0]--;
+    if(this.IsEat() == true){
+      this.EatHand();
     }
     this.Update();
   },
-  IsEat: function(e){//  吃牌判断
+  IsEat: function(e){                      //  吃牌判断
     var that = this;
     if(that.data.placement_num <= 1){
       return false;
@@ -445,23 +527,29 @@ Page({
     }
     return false;
   },
-  EatHand: function(e){//  手牌吃牌
+  EatHand: function(e){                    //  手牌吃牌
     var that = this;
     for(var i = 0; i < that.data.placement_num; i++){
-      that.data.card = that.data.placement_card[i];
+      that.data.temp = that.data.placement_card[i];
       this.OpHand();
     }
     that.data.placement_num = 0;
   },
-  IsWinner: function(e){//  胜利者判断
+  IsWinner: function(e){                   //  胜利者判断
     var that = this;
     if(that.data.player[0].total < that.data.player[1].total){
       that.data.winner = "0";
     }else{
       that.data.winner = "1";
     }
+    this.setData({
+      image_url0:'https://i.loli.net/2021/10/24/hFNM9dbDB1wCnak.png'
+    })
+    wx.redirectTo({
+      url: '/pages/over/over'
+    });
   },
-  Update:function (e) {           //  更新界面数据
+  Update:function (e){                     //  更新界面数据
     var that = this;
     if(that.data.finished == false){        //  完成对局前允许更新
       if(that.data.placement_num >= 1){
@@ -476,7 +564,6 @@ Page({
         })
         this.imageUrl(that.data.top);
       }
-      ///////////////////////////////////////////////////
       this.setData({
         group_num:that.data.group_num,
         placement_num:that.data.placement_num,
@@ -493,27 +580,25 @@ Page({
       })
     }
   },
-  acquireMsg:function(){
-    /*const token=wx.getStorageSync("token");
+  acquireMsg:function(){                   //  获取上步操作
+    const token=wx.getStorageSync("token");
     let uuid=wx.getStorageSync("uuid");
     wx.request({
       url: 'http://172.17.173.97:9000/api/game/?uuid/last',
       header: {'content-type':'application/json',
       'Authorization':token},
-      method: 'POST',
+      method: 'GET',
       success: (res) => {
         console.log(res.data);
         this.data.last_code=res.data.data.last_code;
-        this.data.last_code=res.data.data.your_turn;
+        this.data.your_turn=res.data.data.your_turn;
       },
       fail: () => {},
       complete: () => {}
-    });*/
+    });
   },
-  /**
-   * 生命周期函数--监听页面加载
-   */
-  onLoad: function (options) {
+  onLoad: function (options) {             //  生命周期函数--监听页面加载
+    //  初始化设置
     var that = this;
     for(var i = 0; i < 2; i++){
       that.data.player[i].total = 0;
@@ -523,22 +608,60 @@ Page({
       }
     }
     this.Update();
+
     var firFlag=true;
-    while(that.data.finished==false){
+    while(that.data.finished==false){       //  对局未完成，监听对方操作
       this.acquireMsg();
-      if(that.data.your_turn==true&&firFlag==true){
-        that.data.type=that.data.last_code.substring(2, 3)
-        that.data.card=that.data.last_code.substring(4, 6)
+      if(that.data.your_turn==false&&firFlag==true){  //  正在操作
+        //  执行上步操作
+        that.data.type=that.data.last_code.substring(2, 3);
+        that.data.card=that.data.last_code.substring(4);
         if(that.data.type==0){
-          this.SelectGroup();
+          this.SelectGroup1();
         }else if(that.data.type==1){
-          this.SelectHand();
+          this.SelectHand1();
         }
         firFlag=false;
-      }else if(that.data.your_turn==false&&firFlag==false){
+      }else if(that.data.your_turn==true){
         firFlag=true;
       }
     }
-    //////////////////////////////////////////////////////////
-  }
+
+    //  获取对局信息
+    wx.request({
+      url: 'http://172.17.173.97:9000/api/game/?uuid',
+      header: {'content-type':'application/json',
+      'Authorization':token},
+      method: 'GET',
+      success: (res) => {
+        //  核验信息是否一致
+        console.log(res.data);
+        console.log(that.data.player[0].hand);
+        console.log(that.data.player[1].hand);
+        if(res.data.winner!=that.data.winner){
+          console.log("error");
+        }
+      },
+      fail: () => {},
+      complete: () => {}
+    });
+  },
+  toLast(){
+    const uuid=wx.getStorageSync("uuid");  
+    wx.showModal({
+      title: '提示',
+      content: '您确定要离开游戏吗',
+      success: function (res) {
+        if (res.confirm) {//这里是点击了确定以后
+          console.log('用户点击确定')
+          wx.setStorageSync('uuid', '');
+          wx.redirectTo({
+            url: '/pages/create/create',//跳去起始页
+          })
+        } else {//这里是点击了取消以后
+          console.log('用户点击取消')
+        }
+      }
+    })
+   }
 })

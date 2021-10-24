@@ -40,13 +40,13 @@ Page({
     this.setData({
       isshow:false
     })
-    this.robot(0);
+    this.robot();
   },
   changeview1:function(){
     this.setData({
       isshow1:false
     })
-    this.robot(1);
+    this.robot1();
   },
   iflook:function(){
     if(!this.data.lookcard){
@@ -223,7 +223,7 @@ Page({
     }
     else if(e=="S9"){
       this.setData({
-        image_url:'https://i.loli.net/2021/10/24/kXrEF2SwdaCZD3V.pngg'
+        image_url:'https://i.loli.net/2021/10/24/kDGg4o1qVxspObP.png'
       })
     }
     else if(e=="H9"){
@@ -562,13 +562,31 @@ Page({
       })
     }
   },
-  robot(id){
-    
+  robot:function(e){                        //  1P托管
+   /* var that = this;
+    while(that.data.finished == false){    //  对局未完成
+      if(that.data.turn=="0"){
+        that.data.type = 0;
+        this.SelectGroup();
+        that.data.turn = "1";
+      }
+    }*/
+  },
+  robot1:function(e){                        //  2P托管
+   /* var that = this;
+    while(that.data.finished == false){    //  对局未完成
+      if(that.data.turn=="1"){
+        that.data.type = 0;
+        this.SelectGroup();
+        that.data.turn = "0";
+      }
+    }*/
   },
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    //  初始化设置
     var that = this;
     this.Shuffle();  //  洗牌
     this.SetCard();  //  设置卡组初值
@@ -580,5 +598,21 @@ Page({
       }
     }
     this.Update();
-  }
+  },
+  toLast(){
+    wx.showModal({
+      title: '提示',
+      content: '您确定要离开游戏吗',
+      success: function (res) {
+        if (res.confirm) {//这里是点击了确定以后
+          console.log('用户点击确定')
+          wx.redirectTo({
+            url: '/pages/select/select',//跳去起始页
+          })
+        } else {//这里是点击了取消以后
+          console.log('用户点击取消')
+        }
+      }
+    })
+   }
 })

@@ -7,6 +7,7 @@ Page({
   data: {
     lookcard:false,
     isshow:true,
+    image_url0:'https://i.loli.net/2021/10/23/d5toN2OHnrhIZyP.jpg',
     image_url:'https://i.loli.net/2021/10/24/rwhbsH4WqPcOY5U.png',
     type:0,                         //   操作，0为卡组抽牌，1为手牌出牌
       card:" ",                       //   指定卡牌
@@ -221,7 +222,7 @@ Page({
     }
     else if(e=="S9"){
       this.setData({
-        image_url:'https://i.loli.net/2021/10/24/kXrEF2SwdaCZD3V.pngg'
+        image_url:'https://i.loli.net/2021/10/24/kDGg4o1qVxspObP.png'
       })
     }
     else if(e=="H9"){
@@ -490,6 +491,9 @@ Page({
     }else{
       that.data.winner = "1";
     }
+    this.setData({
+      image_url0:'https://i.loli.net/2021/10/24/hFNM9dbDB1wCnak.png'
+    })
     wx.redirectTo({
       url: '/pages/over/over'
     });
@@ -540,5 +544,21 @@ Page({
       }
     }
     this.Update();
-  }
+  },
+  toLast(){
+    wx.showModal({
+      title: '提示',
+      content: '您确定要离开游戏吗',
+      success: function (res) {
+        if (res.confirm) {//这里是点击了确定以后
+          console.log('用户点击确定')
+          wx.redirectTo({
+            url: '/pages/select/select',//跳去起始页
+          })
+        } else {//这里是点击了取消以后
+          console.log('用户点击取消')
+        }
+      }
+    })
+   }
 })

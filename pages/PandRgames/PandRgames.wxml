@@ -2,6 +2,7 @@
 <view >
     <image  src="https://i.loli.net/2021/10/21/XBh8MONaSduTtHk.jpg" class="background"></image>
 </view> 
+<view class="iconfont icon-fanhui" bindtap='toLast'></view>
 <view class="row">
     <view class="robotduola" >
         <image src="https://i.loli.net/2021/10/22/u2q7tdjJky15aNL.png" />
@@ -35,7 +36,7 @@
 </view>
 <view class="row1">
     <view class="cardnum">
-        <image  src="https://i.loli.net/2021/10/23/d5toN2OHnrhIZyP.jpg" bindtap='clickgcard'/>
+        <image  src="{{image_url0}}" bindtap='clickgcard'/>
         <text >剩余{{group_num+1}}张</text>
     </view>
    <view class="putnum" style="width: 271rpx; height: 365rpx; display: block; box-sizing: border-box">

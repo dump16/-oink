@@ -44,23 +44,23 @@ Page({
           if(res.data.status == 200){ //如果返回的code为200，代表用户名密码验证成功
             const token=wx.getStorageSync("token");
             console.log(token);
-            if(!token){
+            if(!token){/*token为空*/
               wx.setStorageSync("token",res.data.data.token);
                /*console.log(wx.getStorageSync("token"));*/
             }
-            else{
-              }
+            wx.setStorageSync("student_id",res.data.data.detail.student_id);
+            console.log(res.data.data.detail.student_id)
+            wx.setStorageSync("name",res.data.data.detail.name);
            wx.showToast({
                 title: '登录成功',
                 success:function(){
                   setTimeout(
               function(){wx.navigateTo({
-                url: '/pages/select/select'
+                url: '/pages/create/create'
               }),8000}
             );
-                }
-              });
-            
+          }
+         });
             return;
           }else{
             wx.showToast({
@@ -70,8 +70,7 @@ Page({
           }
         }
       })
-    }
-  
+    } 
 },
  toLast(){
   wx.redirectTo({

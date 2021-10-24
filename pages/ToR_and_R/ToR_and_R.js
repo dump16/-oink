@@ -11,7 +11,7 @@ Page({
       setTimeout(function(){
         wx.redirectTo({
           url: '/pages/create/create'
-        }),9000 })
+        }),10000 })
     
   }
     
