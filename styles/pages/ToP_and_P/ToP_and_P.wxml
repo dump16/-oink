@@ -1,0 +1,4 @@
+<!--pages/ToP_and_P/ToP_and_P.wxml-->
+<view class="P_and_P_title">人人对战</view>
+<view class="P_and_P_futitle">两名玩家在同一客户端进行对战</view>
+<image src="https://i.loli.net/2021/10/13/c7OFa3Kvhy1iSw5.png" />

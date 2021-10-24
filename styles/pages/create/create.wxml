@@ -1,0 +1,16 @@
+<!--pages/create/create.wxml-->
+<scroll-view scroll-y="true" style="height: 1300rpx;"   scroll-into-view="{{toView}}" scroll-top="{{scrollTop}}" bindscrolltolower="reach_bottom">
+    <view class="row" wx:for="{{dataList}}" wx:key="uuid">
+        <view class="pic">
+            <image src="https://i.loli.net/2021/10/10/k8KEqMNT9txVhpL.jpg"/>
+        </view>
+        <view class="text">
+            <view class="user">{{item.host_id}}</view>
+            <view class="time">{{item.created_at}}</view>
+        </view>
+        <view class="join_in" >
+            <button class="join_button" bindtap="join_new" data-uuid="{{item.uuid}}">加入对局</button>
+        </view>
+    </view>
+</scroll-view>
+<button class="total" bindtap="create_new">创建新的对局</button>

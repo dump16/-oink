@@ -1,0 +1,382 @@
+/* pages/RandRgames/RandRgames.wxss */
+page{
+    height: 100%;
+}
+.background {
+    width: 100%;
+    height: 100%;
+    position:fixed; 
+    background-size:100% 100%;
+    z-index: -1;
+    margin-top: -90rpx;
+}
+.row{
+    display: flex;
+    width: calc(750rpx*335/360);
+    height: calc(750rpx*164/360);
+    margin: 90rpx 25rpx 0 25rpx;
+    /*background-color: coral; */
+}
+.row3{
+    display: flex;
+    width: calc(750rpx*332/360);
+    height: calc(750rpx*157/360);
+    margin: 14rpx 29rpx 0rpx 29rpx;
+    /*background-color: blue;*/
+}
+.player2{
+    width: calc(750rpx*112/360);
+    height: calc(750rpx*140/360);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
+    margin-top: 10rpx;
+}
+.player2 image{
+    width: calc(750rpx*112/360);
+    height: calc(750rpx*110/360);
+}
+.player2 text{
+    font-size: 29rpx;
+    text-align: center;
+}
+.cards1{
+    display: flex;
+    width: calc(750rpx*226/360);
+    height: calc(750rpx*119/360);
+    margin-top: 30rpx;
+}
+.cards1 image{
+    width: calc(750rpx*44/360);
+    height: calc(750rpx*55/360);
+    background-color: white;
+}
+.cards1 text{
+    text-align: center;
+}
+.cards1 .scard{
+    width: calc(750rpx*44/360);
+    height: calc(750rpx*82/360);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
+    margin-top: 40rpx;
+    margin-left: 21rpx;
+}
+.cards1 .hcard{
+    width: calc(750rpx*44/360);
+    height: calc(750rpx*82/360);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
+    margin-top: 40rpx;
+    margin-left: 21rpx;
+}
+.cards1 .ccard{
+    width: calc(750rpx*44/360);
+    height: calc(750rpx*82/360);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
+    margin-top: 40rpx;
+    margin-left: 21rpx;
+}
+.cards1 .dcard{
+    width: calc(750rpx*44/360);
+    height: calc(750rpx*82/360);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
+    margin-top: 40rpx;
+    margin-left: 21rpx;
+}
+.robotduola2{
+    width: calc(750rpx*90/360);
+    height: calc(750rpx*118/360);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-top: 40rpx;
+    margin-right: 0rpx;
+}
+.robotduola2 image{
+    width: calc(750rpx*90/360);
+    height: calc(750rpx*87/360);
+}
+.robotduola2 text{
+    font-size: 29rpx;
+    text-align: center;
+}
+.robot2{
+    display: flex;
+    width: calc(750rpx*83/360);
+    height: calc(750rpx*40/360);
+    flex-direction: row; 
+    margin-left: 0rpx;
+}
+.robot2 image{
+    width: calc(750rpx*44/360);
+    height: calc(750rpx*40/360);
+}
+.robot2 text{
+    font-size: 29rpx;
+    margin-top: 21rpx;
+    padding: 5rpx;
+}
+.dialog2{
+    width: calc(750rpx*216/360);
+    height: calc(750rpx*45/360);
+    margin-top: -120rpx;
+    margin-left: -20rpx;
+}
+.dialog2 .invite {
+    /* display: none; */
+    width: 450rpx;
+    font-size: 33rpx;
+    height: 94rpx;
+    line-height: 50rpx;
+    padding-left: 20rpx;
+    position: relative;
+    margin: 120rpx auto 0 35rpx;
+    background-color: white;
+    border: 1px solid rgb(221, 221, 221);
+    border-radius: 5px;
+    display: flex;
+    text-align:center;
+    align-items:center;
+    justify-content: center;
+  }
+ .dialog2 .invite:after {
+    content: '';
+    width: 20rpx;
+    height: 20rpx;
+    position: absolute;
+    top: 11rpx;
+    left: 438rpx;
+    transform: rotate(45deg);
+    background-color: white;
+    border: 1px rgb(221, 221, 221);
+    border-style:solid solid none none;
+  }
+  .cards{
+    display: flex;
+    width: calc(750rpx*226/360);
+    height: calc(750rpx*119/360);
+    margin-top: 30rpx;
+}
+.cards image{
+    width: calc(750rpx*44/360);
+    height: calc(750rpx*55/360);
+    background-color: white;
+}
+.cards text{
+    text-align: center;
+}
+.cards .scard{
+    width: calc(750rpx*44/360);
+    height: calc(750rpx*82/360);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
+    margin-top: 40rpx;
+    margin-left: 21rpx;
+}
+.cards .hcard{
+    width: calc(750rpx*44/360);
+    height: calc(750rpx*82/360);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
+    margin-top: 40rpx;
+    margin-left: 21rpx;
+}
+.cards .ccard{
+    width: calc(750rpx*44/360);
+    height: calc(750rpx*82/360);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
+    margin-top: 40rpx;
+    margin-left: 21rpx;
+}
+.cards .dcard{
+    width: calc(750rpx*44/360);
+    height: calc(750rpx*82/360);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
+    margin-top: 40rpx;
+    margin-left: 21rpx;
+}
+.dialog{
+    width: calc(750rpx*216/360);
+    height: calc(750rpx*45/360);
+    margin-top: -120rpx;
+    margin-right: 0;
+}
+.dialog .invite {
+    /* display: none; */
+    width: 450rpx;
+    font-size: 33rpx;
+    height: 94rpx;
+    line-height: 50rpx;
+    padding-left: 20rpx;
+    position: relative;
+    margin: 120rpx auto 0 35rpx;
+    background-color: white;
+    border: 1px solid rgb(221, 221, 221);
+    border-radius: 5px;
+    display: flex;
+    text-align:center;
+    align-items:center;
+    justify-content: center;
+  }
+ .dialog .invite:after {
+    content: '';
+    width: 20rpx;
+    height: 20rpx;
+    position: absolute;
+    top: 11rpx;
+    left: -12rpx;
+    transform: rotate(45deg);
+    background-color: white;
+    border: 1px rgb(221, 221, 221);
+    border-style:none none solid solid;
+  }
+.robotduola1{
+    width: calc(750rpx*90/360);
+    height: calc(750rpx*118/360);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    /*background-color: crimson;*/
+    margin-top: 40rpx;
+}
+.robotduola1 image{
+    width: calc(750rpx*96/360);
+    height: calc(750rpx*94/360);
+}
+.robotduola1 text{
+    font-size: 29rpx;
+    text-align: center;
+}
+.row2{
+    display: flex;
+    width: calc(750rpx*299/360);
+    height: calc(750rpx*123/360);
+    margin: 0 63rpx 0 63rpx;
+    border: 1px solid rgb(221, 221, 221);
+    flex-direction: column;
+    justify-content: space-between; 
+}
+.row2 text{
+    text-align: center;
+}
+.calculate_card{
+    display: flex;
+    width: calc(750rpx*248/360);
+    height: calc(750rpx*38/360);
+    flex-direction: row; 
+    /*background-color: cornflowerblue;*/
+}
+.calculate_card image{
+    width: calc(750rpx*39/360);
+    height: calc(750rpx*38/360);
+}
+.memorycard{
+    width: calc(750rpx*204/360);
+    height: calc(750rpx*21/360);
+    display: flex;
+    flex-direction: row;
+   /* background-color: chocolate;*/
+    margin-top: 17rpx;
+    margin-right: 0rpx;
+    justify-content: space-between;
+}
+.memorycard .s .h .c .d{
+    display: flex;
+    flex-direction: row;
+}
+.memorycard image{
+    width: calc(750rpx*12/360);
+    height: calc(750rpx*15/360);
+}
+.row1{
+    display: flex;
+    width: calc(750rpx*302/360);
+    height: calc(750rpx*205/360);
+    margin: 0rpx 63rpx 27rpx 63rpx;
+    /*background-color: blue;*/
+}
+.row1 .cardnum{
+    width: calc(750rpx*130/360);
+    height: calc(750rpx*204/360);
+}
+.row1 .cardnum image{
+    width: calc(750rpx*130/360);
+    height: calc(750rpx*175/360);
+}
+.row1 .cardnum text{
+    margin-left: 68rpx;
+}
+.row1 .putnum{
+    width: calc(750rpx*130/360);
+    height: calc(750rpx*204/360);
+    background-color: white;
+    margin-left: 88rpx;
+    border: 1px solid rgb(221, 221, 221);
+}
+.row1 .putnum image{
+    width: calc(750rpx*130/360);
+    height: calc(750rpx*175/360);
+}
+.row1 .putnum text{
+    margin-left: 68rpx;
+}
+.row2{
+    display: flex;
+    width: calc(750rpx*299/360);
+    height: calc(750rpx*123/360);
+    margin: 0 63rpx 0 63rpx;
+    border: 1px solid rgb(221, 221, 221);
+    flex-direction: column;
+    justify-content: space-between; 
+}
+.row2 text{
+    text-align: center;
+}
+.calculate_card{
+    display: flex;
+    width: calc(750rpx*248/360);
+    height: calc(750rpx*38/360);
+    flex-direction: row; 
+    /*background-color: cornflowerblue;*/
+}
+.calculate_card image{
+    width: calc(750rpx*39/360);
+    height: calc(750rpx*38/360);
+}
+.memorycard{
+    width: calc(750rpx*204/360);
+    height: calc(750rpx*21/360);
+    display: flex;
+    flex-direction: row;
+   /* background-color: chocolate;*/
+    margin-top: 17rpx;
+    margin-right: 0rpx;
+    justify-content: space-between;
+}
+.memorycard .s .h .c .d{
+    display: flex;
+    flex-direction: row;
+}
+.memorycard image{
+    width: calc(750rpx*12/360);
+    height: calc(750rpx*15/360);
+}
+.icon-fanhui{
+    position: absolute;
+    left: 25rpx;
+    top: 27rpx;
+    color: white;
+}

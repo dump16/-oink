@@ -1,0 +1,10 @@
+<!--pages/over/over.wxml-->
+<image  src="https://i.loli.net/2021/10/21/XBh8MONaSduTtHk.jpg"></image>
+<image  src="https://i.loli.net/2021/10/21/qaKF3TUiOxrp7Gk.png" class="img1"></image>
+<image src="https://i.loli.net/2021/10/21/Ak4bZS61rhmtiye.png" class="img2"></image>
+<view class="iconfont icon-fanhui"></view>
+<view class="outcome">
+    <view >游戏结束！</view>
+    <view >恭喜<text >{{winner}}</text>取得胜利，</view>
+    <view ><text >{{loser}}</text>还要努力噢。</view>
+</view>

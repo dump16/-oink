@@ -1,0 +1,5 @@
+<!--pages/logout/logout.wxml-->
+<view class="iconfont icon-fanhui" bindtap='toLast'></view>
+<image  src="https://i.loli.net/2021/10/10/k8KEqMNT9txVhpL.jpg" mode="aspectFit"/>
+<view >{{id}}  {{name}}</view>
+<button style="width:calc(750rpx*310/360);height: calc(750rpx*45/360);border-radius: 50rpx;" bindtap='Logout'>退出登录</button>
