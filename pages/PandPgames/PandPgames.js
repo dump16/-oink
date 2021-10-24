@@ -527,9 +527,9 @@ Page({
     this.setData({
       image_url0:'https://i.loli.net/2021/10/24/hFNM9dbDB1wCnak.png'
     })
-    wx.redirectTo({
-      url: '/pages/over/over'
-    });
+     wx.navigateTo({
+            url: '/pages/over/over?id=that.data.winner'
+          });
   },
   Update:function (e) {           //  更新界面数据
     var that = this;
