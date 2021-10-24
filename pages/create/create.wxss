@@ -58,3 +58,24 @@ button{
     top: 1348rpx;
     left: 180rpx;
 }
+.getuuid{
+    display: flex;
+    flex-direction: row; 
+}
+input{
+    width: 40%;
+    height: 30rpx;
+    text-align: center;
+    border:1px solid #ccc;
+    border-radius: 50rpx;
+    left:100rpx;
+    top: -28rpx; 
+    position: relative;
+    background-color: white;
+}
+.getuuid button{
+    width:calc(750rpx*80/360);
+    height:calc(750rpx*24/360);
+    font-size: 18rpx;
+    margin-top: 20rpx;
+}

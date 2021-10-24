@@ -7,7 +7,8 @@ Page({
   data: {
       dataList:[],
       num:1,
-      total:0
+      total:0,
+      uuid:''
   },  
   Set_time(utc_datetime) {
     // 转为正常的时间格式 年-月-日 时:分:秒
@@ -90,6 +91,7 @@ Page({
  reach_bottom: function () {
      this.nextPage();
  },
+ /*创建新的对局*/
  create_new: function() {
   const token=wx.getStorageSync("token");
   wx.request({
@@ -108,7 +110,7 @@ Page({
         mask: false,
         success: (result) => {
           const uuid=wx.getStorageSync("uuid");
-          this.getLast(uuid);    
+          this.listen(uuid);    
         }
       });   
     },
@@ -117,8 +119,20 @@ Page({
   });
     
  },
+ /*监听上一步返回的信息*/
+ listen:function(e){
+    var that=this;
+    var times=0;
+    var i=setInterval(function(){
+      times++;
+       if(times<10)that.getLast(e);
+       else clearInterval(i);
+    },500)   
+ },
+ /*加入新的对局*/
  join_new: function(event) {
   const token=wx.getStorageSync("token");
+  /*得到该数组的uuid*/
   wx.setStorageSync("uuid",event.currentTarget.dataset.uuid);
   wx.request({
     url: 'http://172.17.173.97:9000/api/game/?uuid',
@@ -134,5 +148,33 @@ Page({
     fail: () => {},
     complete: () => {}
   });
- }
+ },
+ getUuid: function(e) {
+  var value = e.detail.value; //获取输入的内容
+  this.setData({
+      uuid:value,
+  });
+  wx.setStorageSync('uuid', value);//将获取到的username值存入本地缓存空间
+},
+/*通过对局码加入对局*/
+uuid_tojoin : function(e) {
+  const token=wx.getStorageSync("token");
+  wx.request({
+    url: 'http://172.17.173.97:9000/api/game/?this.data.uuid',
+    data: {private:false},
+    header: {'content-type':'application/json',
+    'Authorization':token},
+    method: 'POST',
+    success: (res) => {
+      console.log(res.data)
+      if(res.data.code==200){
+        this.listen(this.data.uuid);
+        this.setData({
+          uuid:''
+        });}
+    },
+    fail: () => {},
+    complete: () => {}
+  });
+}
 })
