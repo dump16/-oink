@@ -14,7 +14,7 @@
     </view>
 </scroll-view>
 <view class="getuuid">
-    <input bindinput="getUuid"  placeholder="请输入对局码" class="inputuuid"></input>
+    <input bindinput="getUuid"  placeholder="请输入对局码" class="inputuuid" value="{{uuid}}"></input>
     <button  style="width: 175rpx; height: 48rpx; display: block; box-sizing: border-box; left: 65rpx; top: -42rpx; position: relative" bindtap="uuid_tojoin">加入对局</button>
 </view>
 <button class="total" bindtap="create_new">创建新的对局</button>

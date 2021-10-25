@@ -24,13 +24,18 @@ Page({
     host_hand:[],
     client_hand:[],
     player:[{hand:[],num:[],total:0},
-            {hand:[],num:[],total:0}]
+            {hand:[],num:[],total:0}],
+    listen:null,
+    firsthand:false
   },
   changeview : function(){
     if(this.data.isshow){
       this.setData({
         isshow:false
       })
+      if(this.data.your_turn=ture){
+        this.robot(1);
+      }
     }
     else{
       this.setData({
@@ -318,37 +323,42 @@ Page({
     }
   },
   clickscard1:function(e){
-    if(this.data.your_turn==true&& this.data.finished == false){  //  2P回合时响应-S
+    if(this.data.isshow == true && this.data.your_turn==true&& this.data.finished == false){  //  2P回合时响应-S
       this.data.card = "Sx";
       this.SelectHand();
       console.log("2->S");
     }
   },
   clickhcard1:function(e){
-    if(this.data.your_turn==true&& this.data.finished == false){  //  2P回合时响应-H
+    if(this.data.isshow == true && this.data.your_turn==true&& this.data.finished == false){  //  2P回合时响应-H
       this.data.card = "Hx";
       this.SelectHand();
       console.log("2->H");
     }
   },
   clickccard1:function(e){
-    if(this.data.your_turn==true&& this.data.finished == false){  //  2P回合时响应-C
+    if(this.data.isshow == true && this.data.your_turn==true&& this.data.finished == false){  //  2P回合时响应-C
       this.data.card = "Cx";
       this.SelectHand();
       console.log("2->C");
     }
   },
   clickdcard1:function(e){
-    if(this.data.your_turn==true&& this.data.finished == false){  //  2P回合时响应-D
+    if(this.data.isshow == true && this.data.your_turn==true&& this.data.finished == false){  //  2P回合时响应-D
       this.data.card = "Dx";
       this.SelectHand();
       console.log("2->D");
     }
   },
   clickgcard:function(e){
+    if(this.data.your_turn == false){
+      return;
+    }else if(this.data.your_turn == true &&this.data.isshow == false){
+      return;
+    }
     if(this.data.finished == false){
       this.SelectGroup();
-      console.log("P->G");
+      console.log("2->G");
     }
   },
   SelectGroup: function(e){                // 玩家-卡组抽牌
@@ -509,7 +519,7 @@ Page({
         flag = i;
       }
     }
-    that.data.player[0].num[0]--;
+    that.data.player[0].num[suit_int]--;
     if(this.IsEat() == true){
       this.EatHand();
     }
@@ -524,8 +534,9 @@ Page({
     var str2 = that.data.placement_card[that.data.placement_num-2].substring(0, 1);
     if(str1 == str2){  //  花色相同
       return true;
+    }else{
+      return false;
     }
-    return false;
   },
   EatHand: function(e){                    //  手牌吃牌
     var that = this;
@@ -538,95 +549,13 @@ Page({
   IsWinner: function(e){                   //  胜利者判断
     var that = this;
     if(that.data.player[0].total < that.data.player[1].total){
-      that.data.winner = "0";
+      that.data.winner = 0;
     }else{
-      that.data.winner = "1";
+      that.data.winner = 1;
     }
     this.setData({
       image_url0:'https://i.loli.net/2021/10/24/hFNM9dbDB1wCnak.png'
     })
-     wx.navigateTo({
-            url: '/pages/over/over?id=that.data.winner'
-          });
-  },
-  Update:function (e){                     //  更新界面数据
-    var that = this;
-    if(that.data.finished == false){        //  完成对局前允许更新
-      if(that.data.placement_num >= 1){
-        that.data.top=that.data.placement_card[that.data.placement_num-1];
-        this.setData({
-          top:that.data.top,
-        })
-        this.imageUrl(that.data.top);
-      }else{
-        this.setData({
-          top:" ",
-        })
-        this.imageUrl(that.data.top);
-      }
-      this.setData({
-        group_num:that.data.group_num,
-        placement_num:that.data.placement_num,
-        scard_num:that.data.player[0].num[0],
-        hcard_num:that.data.player[0].num[1],
-        ccard_num:that.data.player[0].num[2],
-        dcard_num:that.data.player[0].num[3],
-        scard_num1:that.data.player[1].num[0],
-        hcard_num1:that.data.player[1].num[1],
-        ccard_num1:that.data.player[1].num[2],
-        dcard_num1:that.data.player[1].num[3],
-        card_num:that.data.player[0].total,
-        card_num1:that.data.player[1].total,
-      })
-    }
-  },
-  acquireMsg:function(){                   //  获取上步操作
-    const token=wx.getStorageSync("token");
-    let uuid=wx.getStorageSync("uuid");
-    wx.request({
-      url: 'http://172.17.173.97:9000/api/game/?uuid/last',
-      header: {'content-type':'application/json',
-      'Authorization':token},
-      method: 'GET',
-      success: (res) => {
-        console.log(res.data);
-        this.data.last_code=res.data.data.last_code;
-        this.data.your_turn=res.data.data.your_turn;
-      },
-      fail: () => {},
-      complete: () => {}
-    });
-  },
-  onLoad: function (options) {             //  生命周期函数--监听页面加载
-    //  初始化设置
-    var that = this;
-    for(var i = 0; i < 2; i++){
-      that.data.player[i].total = 0;
-      for(var j = 0; j < 4; j++){
-        that.data.player[i].hand[j] = [];
-        that.data.player[i].num[j] = 0;
-      }
-    }
-    this.Update();
-
-    var firFlag=true;
-    while(that.data.finished==false){       //  对局未完成，监听对方操作
-      this.acquireMsg();
-      if(that.data.your_turn==false&&firFlag==true){  //  正在操作
-        //  执行上步操作
-        that.data.type=that.data.last_code.substring(2, 3);
-        that.data.card=that.data.last_code.substring(4);
-        if(that.data.type==0){
-          this.SelectGroup1();
-        }else if(that.data.type==1){
-          this.SelectHand1();
-        }
-        firFlag=false;
-      }else if(that.data.your_turn==true){
-        firFlag=true;
-      }
-    }
-
     //  获取对局信息
     wx.request({
       url: 'http://172.17.173.97:9000/api/game/?uuid',
@@ -645,6 +574,144 @@ Page({
       fail: () => {},
       complete: () => {}
     });
+    wx.navigateTo({
+       url: '/pages/over/over?id=that.data.winner'
+    });
+  },
+  Update:function (e){                     //  更新界面数据
+    var that = this;
+    if(that.data.finished == false){        //  完成对局前允许更新
+      if(that.data.placement_num >= 1){
+        that.data.top=that.data.placement_card[that.data.placement_num-1];
+      }else{
+        that.data.top=" ";
+      }
+      this.imageUrl(that.data.top);
+      this.setData({
+        group_num:that.data.group_num,
+        placement_num:that.data.placement_num,
+        scard_num:that.data.player[0].num[0],
+        hcard_num:that.data.player[0].num[1],
+        ccard_num:that.data.player[0].num[2],
+        dcard_num:that.data.player[0].num[3],
+        scard_num1:that.data.player[1].num[0],
+        hcard_num1:that.data.player[1].num[1],
+        ccard_num1:that.data.player[1].num[2],
+        dcard_num1:that.data.player[1].num[3],
+        card_num:that.data.player[0].total,
+        card_num1:that.data.player[1].total,
+      })
+    }
+  },
+  robot:function(){
+    var that = this;
+    if(that.data.finished == false){    //  对局未完成
+      if(that.data.player[1].total==0){ //  手牌为空
+        this.SelectGroup();
+      }else{
+        var max = 0;
+        for(var i = 1; i < 4; i++){
+          if(that.data.player[1].num[i]>that.data.player[1].num[max]){
+            max = i;
+          }
+        }
+        if(that.data.top == " " || that.data.player[1].hand[max][0].substring(0,1)!=that.data.top.substring(0,1)){  //  出数量最多的手牌
+          that.data.card=that.data.player[1].hand[max][that.data.player[1].num[max]-1];
+          this.SelectHand();
+        }else if(that.data.player[1].total-that.data.player[1].num[max]==0){  //  没有不吃牌的手牌，卡组抽牌
+          this.SelectGroup();
+        }else{  //  数量最多的手牌吃牌，出数量次多的手牌
+          var sec = 0;
+          if(sec==max){
+            sec=1;
+          }
+          for(var i = 0; i < 4; i++){
+            if(i==max){
+              continue;
+            }
+            if(that.data.player[1].num[i]>that.data.player[1].num[sec]){
+              sec = i;
+            }
+          }
+          that.data.card=that.data.player[1].hand[sec][that.data.player[1].num[sec]-1];
+          this.SelectHand();
+         }
+      }
+    }
+  },
+  Opplay0:function(){
+    if(that.data.finished==false){       //  对局未完成，执行对方操作
+      //  执行上步操作
+      that.data.type=that.data.last_code.substring(2, 3);
+      that.data.card=that.data.last_code.substring(4);
+      if(that.data.type==0){
+        this.SelectGroup1();
+      }else if(that.data.type==1){
+        this.SelectHand1();
+      }
+      if(that.data.isshow==false){
+        this.robot();
+      }
+    }
+  },
+  wait:function(e){ //  监听上一步返回的信息
+    var that = this;
+    wx.request({
+      url: 'http://172.17.173.97:9000/api/game/'+ wx.getStorageSync("uuid") +'/last',
+      data: {},
+      header: {'content-type':'application/json',
+      'Authorization':wx.getStorageSync("token")},
+      method: 'GET',
+      success: (res) => {
+        console.log(res.data.data.last_msg);
+        that.data.last_code=res.data.data.last_code;
+        that.data.your_turn=res.data.data.your_turn;
+        that
+        if(that.data.your_turn==true){
+          /*if(that.data.last_code==""&&that.data.firsthand!=true){        //  后手
+          }else */if(that.data.last_code==""/*&&that.data.firsthand==true*/){  //  先手，执行己方操作
+            if(that.data.isshow==false){
+              this.robot();
+            }
+            this.SelectGroup();
+          }else if(that.data.last_code!=""){ // 先执行对方操作，执行己方操作
+            this.Opplay0();
+            if(that.data.isshow==false){
+              this.robot();
+            }
+            this.SelectGroup();
+          }
+        }
+      },
+      fail: () => {},
+      complete: () => {}
+    });
+  },
+  onShow:function(){
+    var that=this;
+    this.setData({
+      listen:setInterval(()=>{
+        that.wait()
+      },1000),
+    })
+  },
+  onUnload(){
+    clearInterval(this.data.listen);
+    this.setData({
+      listen:null
+    })
+  },
+  onLoad: function (options) {             //  生命周期函数--监听页面加载
+    var that = this;
+    //  初始化设置
+    for(var i = 0; i < 2; i++){
+      that.data.player[i].total = 0;
+      for(var j = 0; j < 4; j++){
+        that.data.player[i].hand[j] = [];
+        that.data.player[i].num[j] = 0;
+      }
+    }
+    this.Update();  //  加载时显示初始数据
   },
   toLast(){
     const uuid=wx.getStorageSync("uuid");  

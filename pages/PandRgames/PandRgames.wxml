@@ -107,13 +107,13 @@
     <block wx:if="{{isshow}}">
         <view class="player2">
             <image src="https://i.loli.net/2021/10/22/PCdsJ3Ie5pAqBzD.png"/>
-            <text >player 2</text>
+            <text >player</text>
         </view>
     </block>
     <block wx:else>
         <view class="robotduola2">
             <image src="https://i.loli.net/2021/10/22/u2q7tdjJky15aNL.png" />
-            <text >机器人哆啦-2号机</text>
+            <text >机器人哆啦-player</text>
         </view>
     </block> 
 </view>

@@ -6,9 +6,11 @@ Page({
    */
   data: {
     winner:'',
-    loser:''
+    loser:'',
+    mode:' '
   },
 onLoad: function(option){
+  console.log(option.id);
     if(option.id==0){
       this.setData({
         winner:"P1",
@@ -21,35 +23,63 @@ onLoad: function(option){
         loser:"P1"
       })
     }
+    this.setData({
+      mode:option.mode
+    })
 },
   /**
    * 生命周期函数--监听页面加载
    */
   onShow: function () {
       setTimeout((res) => {
-        wx.showModal({
-          title: '提示',
-          content: '您要退出登录吗',
-          success: function (res) {
-            if (res.confirm) {//这里是点击了确定以后
-              console.log('用户点击确定')
-              wx.setStorageSync('token', '');//将token置空
-              wx.setStorageSync('name', '');
-              wx.setStorageSync('student_id', '');
-              wx.redirectTo({
-                url: '/pages/logout/logout',
-              })
-            } else {//这里是点击了取消以后
-              console.log('用户点击取消')
-              wx.redirectTo({
-                url: '/pages/create/create',
-              })
-            }
-          }
-        })
+       this.redict();
       }, 5000);
   },
+ redict: function(){
+  if(this.data.mode==2){
 
+  } if(this.data.mode==2){
+    wx.showModal({
+    title: '提示',
+    content: '您要退出登录吗',
+    success: function (res) {
+      if (res.confirm) {//这里是点击了确定以后
+        console.log('用户点击确定')
+        wx.setStorageSync('token', '');//将token置空
+        wx.setStorageSync('name', '');
+        wx.setStorageSync('student_id', '');
+        wx.redirectTo({
+          url: '/pages/logout/logout',
+        })
+      } else {//这里是点击了取消以后
+        console.log('用户点击取消')
+        wx.redirectTo({
+          url: '/pages/create/create',
+        })
+      }
+    }
+  })
+  }
+  else{
+    wx.showModal({
+      title: '提示',
+      content: '您要返回首页吗',
+      success: function (res) {
+        if (res.confirm) {//这里是点击了确定以后
+          console.log('用户点击确定')
+          wx.redirectTo({
+            url: '/pages/index/index',
+          })
+        } else {//这里是点击了取消以后
+          console.log('用户点击取消')
+          wx.redirectTo({
+            url: '/pages/select/select',
+          })
+        }
+      }
+    })
+  }
+ },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

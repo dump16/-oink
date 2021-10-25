@@ -8,7 +8,8 @@ Page({
       dataList:[],
       num:1,
       total:0,
-      uuid:''
+      uuid:'',
+      ifprivate:false
   },  
   Set_time(utc_datetime) {
     // 转为正常的时间格式 年-月-日 时:分:秒
@@ -79,6 +80,7 @@ Page({
     success: (res) => {
      console.log(res.data)
      if(res.data.code==200){
+       console.log(res.data.data.last_msg)
        wx.redirectTo({
          url: '/pages/RandRgames/RandRgames'
        });    
@@ -93,26 +95,48 @@ Page({
  },
  /*创建新的对局*/
  create_new: function() {
-  const token=wx.getStorageSync("token");
+   /*是否创建私人房间*/
+   var that=this;
+  wx.showModal({
+    title: '提示',
+    content: '您想要创建私人房间吗',
+    success: function (res) {
+      if (res.confirm) {//这里是点击了确定以后
+        console.log('用户点击确定')
+        that.setData({
+          ifprivate:true
+        })
+      } else {//这里是点击了取消以后
+        console.log('用户点击取消')
+      }
+      const token=wx.getStorageSync("token");
   wx.request({
     url: 'http://172.17.173.97:9000/api/game',
-    data: {"private":true},
+    data: {"private":that.data.ifprivate},
     header: {'content-type':'application/json',
     'Authorization':token},
     method: 'POST',
     success: (res) => {
       console.log(res.data)
       wx.setStorageSync("uuid",res.data.data.uuid);
+      /*wx.showModal({
+        title: '提示',
+        content: '对局码为{{uuid}}',
+        showCancel: false,
+        confirmText: '确定'
+      });*/
+      const uuid=wx.getStorageSync("uuid");
+      that.listen(uuid);
       wx.showToast({
         title: '等待对局 游戏匹配中 等待对局创建……',
         icon:'none',
         duration:10000,
         mask: false,
-        success: (result) => {
-          const uuid=wx.getStorageSync("uuid");
-          this.listen(uuid);    
-        }
-      });   
+      }); 
+    }
+  });
+   
+       
     },
     fail: () => {},
     complete: () => {}
@@ -125,24 +149,24 @@ Page({
     var times=0;
     var i=setInterval(function(){
       times++;
-       if(times<10)that.getLast(e);
+       if(times<60)that.getLast(e);
        else clearInterval(i);
-    },500)   
+    },1000)   
  },
  /*加入新的对局*/
  join_new: function(event) {
   const token=wx.getStorageSync("token");
   /*得到该数组的uuid*/
   wx.setStorageSync("uuid",event.currentTarget.dataset.uuid);
+  const uuid=wx.getStorageSync("uuid");
   wx.request({
-    url: 'http://172.17.173.97:9000/api/game/?uuid',
-    data: {private:false},
+    url: 'http://172.17.173.97:9000/api/game/'+uuid,
+    /*data: {private:false},*/
     header: {'content-type':'application/json',
     'Authorization':token},
     method: 'POST',
     success: (res) => {
       console.log(res.data)
-      const uuid=wx.getStorageSync("uuid");
       if(res.data.code==200)this.getLast(uuid);
     },
     fail: () => {},
@@ -160,8 +184,8 @@ Page({
 uuid_tojoin : function(e) {
   const token=wx.getStorageSync("token");
   wx.request({
-    url: 'http://172.17.173.97:9000/api/game/?this.data.uuid',
-    data: {private:false},
+    url: 'http://172.17.173.97:9000/api/game/'+this.data.uuid,
+    /*data: {private:true},*/
     header: {'content-type':'application/json',
     'Authorization':token},
     method: 'POST',

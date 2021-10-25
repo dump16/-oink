@@ -5,26 +5,24 @@ Page({
    * 页面的初始数据
    */
   data: {
-    lookcard:false,
     isshow:true,
+    lookcard:false,
     image_url0:'https://i.loli.net/2021/10/23/d5toN2OHnrhIZyP.jpg',
     image_url:'https://i.loli.net/2021/10/24/rwhbsH4WqPcOY5U.png',
-    type:0,                         //   操作，0为卡组抽牌，1为手牌出牌
-      card:" ",                       //   指定卡牌
-      onecard:["S1","H1","C1","D1",
-              "S2","H2","C2","D2",
-              "S3","H3","C3","D3",
-              "S4","H4","C4","D4",
-              "S5","H5","C5","D5",
-              "S6","H6","C6","D6",
-              "S7","H7","C7","D7",
-              "S8","H8","C8","D8",
-              "S9","H9","C9","D9",
-              "S10","H10","C10","D10",
-              "SJ","HJ","CJ","DJ",
-              "SQ","HQ","CQ","DQ",
-              "SK","HK","CK","DK"],   //   一副扑克牌(包括花色和牌数)
-      group_card:[],                  //   卡组
+    card:" ",                         //   指定卡牌
+    group_card:["S1","H1","C1","D1",
+                "S2","H2","C2","D2",
+                "S3","H3","C3","D3",
+                "S4","H4","C4","D4",
+                "S5","H5","C5","D5",
+                "S6","H6","C6","D6",
+                "S7","H7","C7","D7",
+                "S8","H8","C8","D8",
+                "S9","H9","C9","D9",
+                "S10","H10","C10","D10",
+                "SJ","HJ","CJ","DJ",
+                "SQ","HQ","CQ","DQ",
+                "SK","HK","CK","DK"], //   卡组扑克牌(包括花色和牌数)
       group_num:51,                   //   卡组牌数
       placement_card:[],              //   放置区
       placement_num:0,                //   放置区牌数
@@ -33,7 +31,7 @@ Page({
       finished:false,                 //   完成情况
       winner:0,                       //   胜利者：0为1P，1为2P*/
       player:[{hand:[],num:[],total:0},
-              {hand:[],num:[],total:0}]
+              {hand:[],num:[],total:0}],
   },
   iflook: function(){
     if(this.data.lookcard){
@@ -52,6 +50,9 @@ Page({
         this.setData({
           isshow:false
         })
+        if(this.data.turn=="1"){
+          this.robot(1);
+        }
       }
       else{
         this.setData({
@@ -327,46 +328,53 @@ Page({
     }
   },
   clickscard1:function(e){
-    if(this.data.turn=="1"&& this.data.finished == false){  //  2P回合时响应-S
+    console.log("0");
+    if(this.data.isshow == true && this.data.turn=="1"&& this.data.finished == false){  //  2P回合时响应-S
       this.data.card = "Sx";
       this.SelectHand();
-      this.data.turn="0";
+      this.setData({turn:"0"})  
       console.log("P2->S");
+      this.robot(0);
     }
   },
   clickhcard1:function(e){
-    if(this.data.turn=="1"&& this.data.finished == false){  //  2P回合时响应-H
+    if(this.data.isshow == true && this.data.turn=="1"&& this.data.finished == false){  //  2P回合时响应-H
       this.data.card = "Hx";
       this.SelectHand();
-      this.data.turn="0";
+      this.setData({turn:"0"})
       console.log("P2->H");
+      this.robot(0);
     }
   },
   clickccard1:function(e){
-    if(this.data.turn=="1"&& this.data.finished == false){  //  2P回合时响应-C
+    if(this.data.isshow == true && this.data.turn=="1"&& this.data.finished == false){  //  2P回合时响应-C
       this.data.card = "Cx";
       this.SelectHand();
-      this.data.turn="0";
+      this.setData({turn:"0"})
       console.log("P2->C");
+      this.robot(0);
     }
   },
   clickdcard1:function(e){
-    if(this.data.turn=="1"&& this.data.finished == false){  //  2P回合时响应-D
+    if(this.data.isshow == true && this.data.turn=="1"&& this.data.finished == false){  //  2P回合时响应-D
       this.data.card = "Dx";
       this.SelectHand();
-      this.data.turn="0";
+      this.setData({turn:"0"})
       console.log("P2->D");
+      this.robot(0);
     }
   },
   clickgcard:function(e){
+    if(this.data.turn == "0"){
+      return;
+    }else if(this.data.turn == "1"&&this.data.isshow == false){
+      return;
+    }
     if(this.data.finished == false){
       this.SelectGroup();
+      this.setData({turn:"0"})
       console.log(this.data.turn+"->G");
-      if(this.data.turn == "0"){
-        this.data.turn = "1";
-      }else if(this.data.turn == "1"){
-        this.data.turn = "0";
-      }
+      this.robot(0);
     }
   },
   Shuffle: function(){                     //  洗牌
@@ -374,19 +382,13 @@ Page({
     var times = 5;                         //  默认洗牌5次
     for(var i = 0; i < times; i++){
       for(var j = 0; j < 52; j++) {
-        var rvalue = Math.round(Math.random()*50+1);  //  随机生成1~51的一个整数
-        var tempcard = that.data.onecard[j];
-        that.data.onecard[j] = that.data.onecard[rvalue];
-        that.data.onecard[rvalue] = tempcard;
+        var rvalue = Math.round(Math.random()*50+1);  //  随机生成[1,52)的一个整数
+        var tempcard = that.data.group_card[j];
+        that.data.group_card[j] = that.data.group_card[rvalue];
+        that.data.group_card[rvalue] = tempcard;
       }
     }
   },
-  SetCard: function(){                     //  设置卡组初值
-    var that = this;
-    for(var i = 0; i < 52; i++){
-      that.data.group_card[i] = that.data.onecard[i];
-    }
-  }, 
   SelectGroup: function(e){                //  卡组抽牌
     var that = this;
     that.data.placement_card[that.data.placement_num++] = that.data.group_card[that.data.group_num--];
@@ -473,8 +475,9 @@ Page({
     var str2 = that.data.placement_card[that.data.placement_num-2].substring(0, 1);
     if(str1 == str2){  //  花色相同
       return true;
+    }else{
+      return false;
     }
-    return false;
   },
   EatHand: function(e){//  手牌吃牌
     var that = this;
@@ -487,32 +490,26 @@ Page({
   IsWinner: function(e){//  胜利者判断
     var that = this;
     if(that.data.player[0].total < that.data.player[1].total){
-      that.data.winner = "0";
+      that.data.winner = 0;
     }else{
-      that.data.winner = "1";
+      that.data.winner = 1;
     }
     this.setData({
       image_url0:'https://i.loli.net/2021/10/24/hFNM9dbDB1wCnak.png'
     })
-     wx.navigateTo({
-            url: '/pages/over/over?id=that.data.winner'
-          });
+    wx.navigateTo({
+      url: '/pages/over/over?id=that.data.winner'
+    });
   },
   Update:function (e) {           //  更新界面数据
     var that = this;
     if(that.data.finished == false){        //  完成对局前允许更新
       if(that.data.placement_num >= 1){
         that.data.top=that.data.placement_card[that.data.placement_num-1];
-        this.setData({
-          top:that.data.top,
-        })
-        this.imageUrl(that.data.top);
       }else{
-        this.setData({
-          top:" ",
-        })
-        this.imageUrl(that.data.top);
+        that.data.top=" ";
       }
+      this.imageUrl(that.data.top);
       this.setData({
         group_num:that.data.group_num,
         placement_num:that.data.placement_num,
@@ -529,13 +526,58 @@ Page({
       })
     }
   },
+  robot:function(t){
+    var that = this;
+    if(that.data.finished == false){    //  对局未完成
+      if(that.data.player[t].total==0){ //  手牌为空
+        this.SelectGroup();
+      }else{
+        var max = 0;
+        for(var i = 1; i < 4; i++){
+          if(that.data.player[t].num[i]>that.data.player[t].num[max]){
+            max = i;
+          }
+        }
+        if(that.data.top == " " || that.data.player[t].hand[max][0].substring(0,1)!=that.data.top.substring(0,1)){  //  出数量最多的手牌
+          that.data.card=that.data.player[t].hand[max][that.data.player[t].num[max]-1];
+          this.SelectHand();
+        }else if(that.data.player[t].total-that.data.player[t].num[max]==0){  //  没有不吃牌的手牌，卡组抽牌
+          this.SelectGroup();
+        }else{  //  数量最多的手牌吃牌，出数量次多的手牌
+          var sec = 0;
+          if(sec==max){
+            sec=1;
+          }
+          for(var i = 0; i < 4; i++){
+            if(i==max){
+              continue;
+            }
+            if(that.data.player[t].num[i]>that.data.player[t].num[sec]){
+              sec = i;
+            }
+          }
+          that.data.card=that.data.player[t].hand[sec][that.data.player[t].num[sec]-1];
+          this.SelectHand();
+         }
+      }
+      if(this.data.turn == "0"){
+        this.data.turn = "1";
+        if(this.data.isshow == false){
+          this.robot(1);
+        }
+      }else if(this.data.turn == "1"){
+        this.data.turn = "0";      
+        this.robot(0);
+      }
+    }
+  },
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
     var that = this;
+    //  初始化设置
     this.Shuffle();  //  洗牌
-    this.SetCard();  //  设置卡组初值
     for(var i = 0; i < 2; i++){
       that.data.player[i].total = 0;
       for(var j = 0; j < 4; j++){
@@ -543,7 +585,10 @@ Page({
         that.data.player[i].num[j] = 0;
       }
     }
-    this.Update();
+    this.Update();  //  加载时显示初始数据
+
+    this.SelectGroup();  // 机器人先手
+    this.setData({turn:"1"})
   },
   toLast(){
     wx.showModal({

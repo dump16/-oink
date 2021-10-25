@@ -52,12 +52,12 @@
 </view>
 <view class="row1">
     <view class="cardnum">
-        <image  src="{{image_url0}}" bindtap='clickgcard'/>
+        <image src="{{image_url0}}" bindtap='clickgcard'/>
         <text >剩余{{group_num+1}}张</text>
     </view>
     <view class="putnum" style="width: 271rpx; height: 365rpx; display: block; box-sizing: border-box">
         <image src="{{image_url}}"/>
-        <text >现有{{placement_num}}张{{top}}</text>
+        <text >现有{{placement_num}}张</text>
     </view>
 </view>
 <view class="row2">
