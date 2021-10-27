@@ -435,8 +435,12 @@ Page({
     console.log("玩家-手牌出牌")
     var that = this;
     that.data.type=1;
-    var suit = that.data.temp.substring(0, 1);
+    var suit = that.data.card.substring(0, 1);
     if(that.data.player[1].total != 0){ //  手牌不为空
+      console.log("P1:hand:")
+      console.log(that.data.player[1].hand)
+      console.log("num:")
+      console.log(that.data.player[1].num)
       switch(suit) {                      //  对应花色
         case "S": //黑桃S
           if(that.data.player[1].num[0] == 0){
@@ -468,6 +472,7 @@ Page({
           break;
       }
       that.data.card=that.data.placement_card[that.data.placement_num-1];
+      console.log(that.data.card)
       //  执行玩家操作-手牌出牌
       let uuid=wx.getStorageSync("uuid");
       const token=wx.getStorageSync("token");
@@ -671,6 +676,7 @@ Page({
       //  执行上步操作
       that.data.type=that.data.last_code.substring(2, 3);
       that.data.card=that.data.last_code.substring(4);
+      console.log(that.data.card)
       if(that.data.type==0){
         this.SelectGroup1();
       }else if(that.data.type==1){
@@ -694,6 +700,7 @@ Page({
       method: 'GET',
       success: (res) => {
         console.log("监听")
+        console.log(res.data)
         if(res.data.code==200){
           if(res.data.data.last_msg=="对局刚开始" && res.data.data.your_turn==false){ //  后手出牌
             console.log("后手出牌")
