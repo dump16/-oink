@@ -560,9 +560,15 @@ Page({
     this.setData({
       image_url0:'https://i.loli.net/2021/10/24/hFNM9dbDB1wCnak.png'
     })
-     wx.navigateTo({
-            url: '/pages/over/over?id=that.data.winner&mode=0'
-          });
+     if(that.data.winner ==0){
+         wx.navigateTo({
+              url: '/pages/over/over?id=0&mode=0'
+            });
+      }else{
+           wx.navigateTo({
+                url: '/pages/over/over?id=1&mode=0'
+              });
+      }
   },
   Update:function (e) {           //  更新界面数据
     var that = this;

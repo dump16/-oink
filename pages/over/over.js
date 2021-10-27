@@ -10,17 +10,16 @@ Page({
     mode:' '
   },
 onLoad: function(option){
-  console.log(option.id);
     if(option.id==0){
       this.setData({
-        winner:"P1",
-        loser:"P2"
+        winner:"1P",
+        loser:"2P"
       })
     }
     else{
       this.setData({
-        winner:"P2",
-        loser:"P1"
+        winner:"2P",
+        loser:"1P"
       })
     }
     this.setData({

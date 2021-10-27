@@ -10,6 +10,7 @@ Page({
     image_url0:'https://i.loli.net/2021/10/23/d5toN2OHnrhIZyP.jpg',
     image_url:'https://i.loli.net/2021/10/24/rwhbsH4WqPcOY5U.png',
     last_code:" ",                  //   上步操作信息
+    last_msg:"对局刚开始",
     type:0,                         //   操作，0为卡组抽牌，1为手牌出牌
     card:" ",                       //   指定卡牌
     temp:" ",                       //   临时卡牌
@@ -25,19 +26,18 @@ Page({
     client_hand:[],
     player:[{hand:[],num:[],total:0},
             {hand:[],num:[],total:0}],
-    listen:null,
-    firsthand:false
+    listen:0,
+    turn1:1
   },
   changeview : function(){
     if(this.data.isshow){
       this.setData({
         isshow:false
       })
-      if(this.data.your_turn=ture){
-        this.robot(1);
+      if(this.data.turn1==1){
+        this.robot();
       }
-    }
-    else{
+    } else{
       this.setData({
         isshow:true
       })
@@ -323,76 +323,82 @@ Page({
     }
   },
   clickscard1:function(e){
-    if(this.data.isshow == true && this.data.your_turn==true&& this.data.finished == false){  //  2P回合时响应-S
-      this.data.card = "Sx";
+    var that=this
+    if(that.data.isshow == true && that.data.turn1==1&& that.data.finished == false){  //  2P回合时响应-S
+      that.data.card = "Sx";
       this.SelectHand();
-      console.log("2->S");
     }
   },
   clickhcard1:function(e){
-    if(this.data.isshow == true && this.data.your_turn==true&& this.data.finished == false){  //  2P回合时响应-H
-      this.data.card = "Hx";
+    var that=this
+    if(that.data.isshow == true && that.data.turn1==1&& that.data.finished == false){  //  2P回合时响应-H
+      that.data.card = "Hx";
       this.SelectHand();
-      console.log("2->H");
     }
   },
   clickccard1:function(e){
-    if(this.data.isshow == true && this.data.your_turn==true&& this.data.finished == false){  //  2P回合时响应-C
-      this.data.card = "Cx";
+    var that=this
+    if(that.data.isshow == true && that.data.turn1==1&& that.data.finished == false){  //  2P回合时响应-C
+      that.data.card = "Cx";
       this.SelectHand();
-      console.log("2->C");
     }
   },
   clickdcard1:function(e){
-    if(this.data.isshow == true && this.data.your_turn==true&& this.data.finished == false){  //  2P回合时响应-D
-      this.data.card = "Dx";
+    var that=this
+    if(that.data.isshow == true && that.data.turn1==1&& that.data.finished == false){  //  2P回合时响应-D
+      that.data.card = "Dx";
       this.SelectHand();
-      console.log("2->D");
     }
   },
   clickgcard:function(e){
-    if(this.data.your_turn == false){
+    var that=this
+    if(that.data.turn1==0){
       return;
-    }else if(this.data.your_turn == true &&this.data.isshow == false){
+    }else if(that.data.turn1==1 &&that.data.isshow == false){
       return;
     }
-    if(this.data.finished == false){
+    if(that.data.finished == false){
       this.SelectGroup();
-      console.log("2->G");
     }
   },
   SelectGroup: function(e){                // 玩家-卡组抽牌
-    var that = this;
-    that.data.type=0;
+    console.log("玩家-卡组抽牌")
+    var that = this
+    that.data.type=0
     //  执行操作
-    const token=wx.getStorageSync("token");
-    let uuid=wx.getStorageSync("uuid");
+    let uuid=wx.getStorageSync("uuid")
+    const token=wx.getStorageSync("token")
     wx.request({
-      url: 'http://172.17.173.97:9000/api/game/?uuid',
+      url: 'http://172.17.173.97:9000/api/game/'+uuid,
       data: {"type":0},
       header: {'content-type':'application/json',
       'Authorization':token},
       method: 'PUT',
       success: (res) => {
-        console.log(res.data);
-        that.data.card=res.data.data.last_code.substring(4);
+        that.data.card=res.data.data.last_code.substring(4)
+        that.data.placement_card[that.data.placement_num++] = that.data.card
+        that.data.group_num--
+        if(this.IsEat() == true){
+          this.EatHand()
+        }
+        this.Update()
+        if(that.data.group_num == -1){         //  卡组为空，结束对局
+          that.data.finished = true
+          this.IsWinner()
+        }
+        that.data.turn1=0
       },
-      fail: () => {},
+      fail: () => {
+        console.log("请求失败")
+      },
       complete: () => {}
-    });
-    that.data.placement_card[that.data.placement_num++] = that.data.card;
-    if(this.IsEat() == true){
-      this.EatHand();
-    }
-    this.Update();
-    if(that.data.group_num == -1){         //  卡组为空，结束对局
-      that.data.finished = true;
-      this.IsWinner();
-    }
+    })
   },
   SelectGroup1: function(e){               // 对方-卡组抽牌
+    console.log("对方-卡组抽牌")
     var that = this;
     that.data.placement_card[that.data.placement_num++] = that.data.card;
+    that.data.group_num--
     if(this.IsEat() == true){
       this.EatHand();
     }
@@ -406,34 +412,31 @@ Page({
     var that = this;
     var suit = that.data.temp.substring(0, 1);
     var i = 0;
-    if(that.data.your_turn = true){
+    if(that.data.turn1==1){
       i=1;
     }
     that.data.player[i].total++;
     switch (suit) {                         //  对应花色
       case "S":                             //  黑桃S
-        that.data.player[i].hand[0][that.data.player[i].num[0]] =  that.data.temp;
-        that.data.player[i].num[0]++;
+        that.data.player[i].hand[0][that.data.player[i].num[0]++] =  that.data.temp;
         break;
       case "H":                             //  红桃H 
-        that.data.player[i].hand[1][that.data.player[i].num[1]] =  that.data.temp;
-        that.data.player[i].num[1]++;
+        that.data.player[i].hand[1][that.data.player[i].num[1]++] =  that.data.temp;
         break;
       case "C":                             //  梅花C
-        that.data.player[i].hand[2][that.data.player[i].num[2]] =  that.data.temp;
-        that.data.player[i].num[2]++;
+        that.data.player[i].hand[2][that.data.player[i].num[2]++] =  that.data.temp;
         break;
       case "D":                             //  方块D
-        that.data.player[i].hand[3][that.data.player[i].num[3]] =  that.data.temp;
-        that.data.player[i].num[3]++;
+        that.data.player[i].hand[3][that.data.player[i].num[3]++] =  that.data.temp;
         break;
     }
   },  
   SelectHand: function(e){                 // 玩家-手牌出牌
+    console.log("玩家-手牌出牌")
     var that = this;
     that.data.type=1;
     var suit = that.data.temp.substring(0, 1);
-    if(that.data.player[i].total != 0){
+    if(that.data.player[1].total != 0){ //  手牌不为空
       switch(suit) {                      //  对应花色
         case "S": //黑桃S
           if(that.data.player[1].num[0] == 0){
@@ -443,7 +446,7 @@ Page({
           that.data.placement_card[that.data.placement_num++] = that.data.player[1].hand[0][--that.data.player[1].num[0]];
           break;
         case "H": //红桃H
-          if(that.data.player[i].num[1] == 0){
+          if(that.data.player[1].num[1] == 0){
             break;
           }
           that.data.player[1].total--;
@@ -466,27 +469,32 @@ Page({
       }
       that.data.card=that.data.placement_card[that.data.placement_num-1];
       //  执行玩家操作-手牌出牌
-      const token=wx.getStorageSync("token");
       let uuid=wx.getStorageSync("uuid");
+      const token=wx.getStorageSync("token");
       wx.request({
-        url: 'http://172.17.173.97:9000/api/game/?uuid',
+        url: 'http://172.17.173.97:9000/api/game/'+uuid,
         data: {"type":1,"card":that.data.card},
         header: {'content-type':'application/json',
         'Authorization':token},
         method: 'PUT',
         success: (res) => {
-          console.log(res.data);
+          //console.log("出手牌");
+          console.log(res.data.data)
+          if(this.IsEat() == true){
+            this.EatHand();
+          }
+          this.Update();
+          that.data.turn1=0
         },
-        fail: () => {},
+        fail: () => {
+          console.log("请求失败")
+        },
         complete: () => {}
       });
-      if(this.IsEat() == true){
-        this.EatHand();
-      }
-      this.Update();
     } 
   }, 
   SelectHand1: function(e){                // 对方-手牌出牌
+    console.log("对方-手牌出牌")
     var that = this;
     var suit = that.data.card.substring(0, 1);
     that.data.player[0].total--;
@@ -515,7 +523,7 @@ Page({
         }else{  //卡牌前移
           that.data.player[0].hand[suit_int][i]=that.data.player[0].hand[suit_int][i+1];
         }
-      }else if(that.data.player[0].hand[suit_int][i] == card){
+      }else if(that.data.player[0].hand[suit_int][i] == that.data.card){
         flag = i;
       }
     }
@@ -547,6 +555,7 @@ Page({
     that.data.placement_num = 0;
   },
   IsWinner: function(e){                   //  胜利者判断
+    console.log("输出胜利者信息")
     var that = this;
     if(that.data.player[0].total < that.data.player[1].total){
       that.data.winner = 0;
@@ -557,28 +566,40 @@ Page({
       image_url0:'https://i.loli.net/2021/10/24/hFNM9dbDB1wCnak.png'
     })
     //  获取对局信息
+    let uuid=wx.getStorageSync("uuid");
+    const token=wx.getStorageSync("token");
     wx.request({
-      url: 'http://172.17.173.97:9000/api/game/?uuid',
+      url: 'http://172.17.173.97:9000/api/game/'+uuid,
       header: {'content-type':'application/json',
       'Authorization':token},
       method: 'GET',
       success: (res) => {
         //  核验信息是否一致
-        console.log(res.data);
-        console.log(that.data.player[0].hand);
-        console.log(that.data.player[1].hand);
-        if(res.data.winner!=that.data.winner){
-          console.log("error");
-        }
-      },
-      fail: () => {},
-      complete: () => {}
-    });
-    wx.navigateTo({
-       url: '/pages/over/over?id=that.data.winner'
-    });
+        console.log("host:"+res.data.data.host_hand)
+        console.log("client:"+res.data.data.client_hand)
+        console.log("winner:"+res.data.data.winner)
+        console.log("YOU--->"+that.data.player[0].hand)
+        console.log("ME---->"+that.data.player[1].hand)
+        console.log("Win--->"+that.data.winner)
+        if(res.data.data.winner ==0){
+           wx.navigateTo({
+            url: '/pages/over/over?id=0&mode=2'
+          });
+        }else{
+             wx.navigateTo({
+              url: '/pages/over/over?id=1&mode=2'
+            });
+        }
+        clearInterval(this.data.listen);
+        },
+        fail: () => {
+          console.log("请求失败")
+        },
+        complete: () => {}
+      });
   },
   Update:function (e){                     //  更新界面数据
+    console.log("更新界面数据")
     var that = this;
     if(that.data.finished == false){        //  完成对局前允许更新
       if(that.data.placement_num >= 1){
@@ -604,9 +625,11 @@ Page({
     }
   },
   robot:function(){
+    console.log("AI作战")
     var that = this;
     if(that.data.finished == false){    //  对局未完成
       if(that.data.player[1].total==0){ //  手牌为空
+        console.log("手牌为空->出卡组")
         this.SelectGroup();
       }else{
         var max = 0;
@@ -616,11 +639,14 @@ Page({
           }
         }
         if(that.data.top == " " || that.data.player[1].hand[max][0].substring(0,1)!=that.data.top.substring(0,1)){  //  出数量最多的手牌
+          console.log("出数量最多的手牌")
           that.data.card=that.data.player[1].hand[max][that.data.player[1].num[max]-1];
           this.SelectHand();
         }else if(that.data.player[1].total-that.data.player[1].num[max]==0){  //  没有不吃牌的手牌，卡组抽牌
+          console.log("没有不吃牌的手牌，卡组抽牌")
           this.SelectGroup();
         }else{  //  数量最多的手牌吃牌，出数量次多的手牌
+          console.log("数量最多的手牌吃牌，出数量次多的手牌")
           var sec = 0;
           if(sec==max){
             sec=1;
@@ -640,6 +666,7 @@ Page({
     }
   },
   Opplay0:function(){
+    var that=this
     if(that.data.finished==false){       //  对局未完成，执行对方操作
       //  执行上步操作
       that.data.type=that.data.last_code.substring(2, 3);
@@ -649,57 +676,56 @@ Page({
       }else if(that.data.type==1){
         this.SelectHand1();
       }
+      that.data.turn1=1
+      console.log("执行对方操作完成")
       if(that.data.isshow==false){
         this.robot();
       }
     }
   },
-  wait:function(e){ //  监听上一步返回的信息
+  listen:function(){
     var that = this;
+    let uuid=wx.getStorageSync("uuid");
+    const token=wx.getStorageSync("token");
     wx.request({
-      url: 'http://172.17.173.97:9000/api/game/'+ wx.getStorageSync("uuid") +'/last',
-      data: {},
+      url: 'http://172.17.173.97:9000/api/game/'+uuid+'/last',
       header: {'content-type':'application/json',
-      'Authorization':wx.getStorageSync("token")},
+      'Authorization':token},
       method: 'GET',
       success: (res) => {
-        console.log(res.data.data.last_msg);
-        that.data.last_code=res.data.data.last_code;
-        that.data.your_turn=res.data.data.your_turn;
-        that
-        if(that.data.your_turn==true){
-          /*if(that.data.last_code==""&&that.data.firsthand!=true){        //  后手
-          }else */if(that.data.last_code==""/*&&that.data.firsthand==true*/){  //  先手，执行己方操作
-            if(that.data.isshow==false){
-              this.robot();
+        console.log("监听")
+        if(res.data.code==200){
+          if(res.data.data.last_msg=="对局刚开始" && res.data.data.your_turn==false){ //  后手出牌
+            console.log("后手出牌")
+            that.data.turn1=0
+          }else if(that.data.last_msg!=res.data.data.last_msg){ //  获取新信息
+            console.log("获取新信息")
+            that.data.last_msg=res.data.data.last_msg
+            console.log(res.data.data)
+            console.log(res.data.data.last_msg)
+            that.data.last_code=res.data.data.last_code;
+            that.data.your_turn=res.data.data.your_turn;
+            console.log(that.data.your_turn)
+            console.log(that.data.turn1)
+            if(that.data.your_turn==true&&that.data.turn1==1){  //  执行己方操作
+              console.log("等待玩家触发点击事件")
+              //  等待玩家触发点击事件
+            }else if(that.data.your_turn==true&&that.data.turn1==0){ // 执行对方操作
+              console.log("执行对方操作")
+              this.Opplay0();
             }
-            this.SelectGroup();
-          }else if(that.data.last_code!=""){ // 先执行对方操作，执行己方操作
-            this.Opplay0();
-            if(that.data.isshow==false){
-              this.robot();
-            }
-            this.SelectGroup();
           }
+        }else if(res.data.code!=200&&res.data.code!=403&&res.data.code!=404){ //  被动结束对局
+          console.log("被动结束对局")
+          console.log(res.data)
+          this.IsWinner();
         }
       },
-      fail: () => {},
+      fail: () => {
+        console.log("请求失败")
+      },
       complete: () => {}
     });
-  },
-  onShow:function(){
-    var that=this;
-    this.setData({
-      listen:setInterval(()=>{
-        that.wait()
-      },1000),
-    })
-  },
-  onUnload(){
-    clearInterval(this.data.listen);
-    this.setData({
-      listen:null
-    })
   },
   onLoad: function (options) {             //  生命周期函数--监听页面加载
     var that = this;
@@ -712,6 +738,13 @@ Page({
       }
     }
     this.Update();  //  加载时显示初始数据
+    var listen =setInterval(this.listen,2000);
+    this.setData({
+      listen:listen,
+    })
+  },
+  onUnload(){
+    clearInterval(this.data.listen);
   },
   toLast(){
     const uuid=wx.getStorageSync("uuid");  

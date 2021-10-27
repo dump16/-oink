@@ -9,7 +9,8 @@ Page({
       num:1,
       total:0,
       uuid:'',
-      ifprivate:false
+      ifprivate:false,
+      listen:0
   },  
   Set_time(utc_datetime) {
     // 转为正常的时间格式 年-月-日 时:分:秒
@@ -110,33 +111,31 @@ Page({
         console.log('用户点击取消')
       }
       const token=wx.getStorageSync("token");
-  wx.request({
-    url: 'http://172.17.173.97:9000/api/game',
-    data: {"private":that.data.ifprivate},
-    header: {'content-type':'application/json',
-    'Authorization':token},
-    method: 'POST',
-    success: (res) => {
-      console.log(res.data)
-      wx.setStorageSync("uuid",res.data.data.uuid);
-      /*wx.showModal({
-        title: '提示',
-        content: '对局码为{{uuid}}',
-        showCancel: false,
-        confirmText: '确定'
-      });*/
-      const uuid=wx.getStorageSync("uuid");
-      that.listen(uuid);
-      wx.showToast({
-        title: '等待对局 游戏匹配中 等待对局创建……',
-        icon:'none',
-        duration:10000,
-        mask: false,
-      }); 
-    }
-  });
-   
-       
+      wx.request({
+        url: 'http://172.17.173.97:9000/api/game',
+        data: {"private":that.data.ifprivate},
+        header: {'content-type':'application/json',
+        'Authorization':token},
+        method: 'POST',
+        success: (res) => {
+          console.log(res.data)
+          wx.setStorageSync("uuid",res.data.data.uuid);
+          /*wx.showModal({
+            title: '提示',
+            content: '对局码为{{uuid}}',
+            showCancel: false,
+            confirmText: '确定'
+          });*/
+          const uuid=wx.getStorageSync("uuid");
+          that.listen(uuid);
+          wx.showToast({
+            title: '等待对局 游戏匹配中 等待对局创建……',
+            icon:'none',
+            duration:10000,
+            mask: false,
+          }); 
+        }
+      });
     },
     fail: () => {},
     complete: () => {}
@@ -147,10 +146,10 @@ Page({
  listen:function(e){
     var that=this;
     var times=0;
-    var i=setInterval(function(){
+    this.data.listen=setInterval(function(){
       times++;
        if(times<60)that.getLast(e);
-       else clearInterval(i);
+       else clearInterval(this.data.listen);
     },1000)   
  },
  /*加入新的对局*/
@@ -184,21 +183,24 @@ Page({
 uuid_tojoin : function(e) {
   const token=wx.getStorageSync("token");
   wx.request({
-    url: 'http://172.17.173.97:9000/api/game/'+this.data.uuid,
-    /*data: {private:true},*/
-    header: {'content-type':'application/json',
-    'Authorization':token},
-    method: 'POST',
-    success: (res) => {
-      console.log(res.data)
-      if(res.data.code==200){
-        this.listen(this.data.uuid);
-        this.setData({
-          uuid:''
-        });}
-    },
-    fail: () => {},
-    complete: () => {}
-  });
-}
+      url: 'http://172.17.173.97:9000/api/game/'+this.data.uuid,
+      /*data: {private:true},*/
+      header: {'content-type':'application/json',
+      'Authorization':token},
+      method: 'POST',
+      success: (res) => {
+        console.log(res.data)
+        if(res.data.code==200){
+          this.listen(this.data.uuid);
+          this.setData({
+            uuid:''
+          });}
+      },
+      fail: () => {},
+      complete: () => {}
+    });
+  },
+  onUnload(){
+    clearInterval(this.data.listen);
+  },
 })
